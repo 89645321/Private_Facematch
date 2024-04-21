@@ -35,10 +35,11 @@ embedding할 때 걸린 시간을 측정. 4090 서버 사용. 마찬가지로 em
 
 ### embedding_time_stats.json
 
-각 모델별로 embedding할 때 걸린 시간 평균과 표준편차 표기.
+모델별로 embedding할 때 걸린 시간 평균과 표준편차 표기.
 
 -----------------------
 
-### 기타
+### success_rate.json
 
-cosine similarity 연산 결과 다 도는대로 올릴 예정. 넉넉잡아 이틀 소요될 것으로 추정됨. 참고로 DeepFace 모델과 Dlib 모델은 모두 embedding에 실패해서 모델 8개로 연산할 예정.
+모델별 embedding 성공률
+
