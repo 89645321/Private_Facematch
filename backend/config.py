@@ -1,0 +1,5 @@
+RDS_NAME = 'private_facematch'
+RDS_USER = 'admin'
+RDS_PASSWORD = 'geszyt-4kevqu-fycdYf'
+RDS_HOST = 'private-facematch.csyggxbgqeyd.ap-northeast-2.rds.amazonaws.com'
+RDS_PORT = '3306'
