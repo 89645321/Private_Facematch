@@ -1,0 +1,69 @@
+import React, { Dispatch, SetStateAction, useCallback, useState, useEffect} from "react";
+import ImageUploadIcon from "./ImageUploadIcon"
+import { updatePhoto, selectUser } from "../store/slices/user";
+import { AppDispatch } from "../store";
+import { useDispatch, useSelector } from "react-redux";
+import { Modal, Box, IconButton, Typography} from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+import CryptoCard from "./CryptoCard";
+
+type PhotoInfo = {
+  file: File | null;
+  src: string;
+}
+const initPhotoInfo = (): PhotoInfo => (
+  {
+    file: null,
+    src: "plus.jpeg",
+  }
+);
+
+export interface IProps {
+  setStep: Dispatch<SetStateAction<number>>;
+}
+
+export default function PhotoUpload({ 
+  setStep, 
+}: IProps) {
+  const [photoInfos, setPhotoInfos] = useState<PhotoInfo>(initPhotoInfo());
+  const dispatch = useDispatch<AppDispatch>();
+
+
+  const setIthPhoto = useCallback((file: File) => {
+    const newPhoto = { file, src: URL.createObjectURL(file) };
+    setPhotoInfos(newPhoto);
+  }, [photoInfos, setPhotoInfos]);
+
+
+  const confirmOnClick = useCallback(() => {
+    dispatch(updatePhoto(photoInfos.src));
+    setStep(1);
+  }, [photoInfos, setStep]);
+  
+  return (
+    <section className={""}>
+        <CryptoCard setStep={setStep}/>
+        <h2 className={"text-center text-2xl text-black-800 font-bold mt-10 my-4"}>
+            본인 인증(얼굴 촬영)
+        </h2>
+      <section className={"flex-1 flex flex-col justify-center"}>
+        <ImageUploadIcon
+                src={photoInfos.src}
+                setIthPhoto={setIthPhoto}
+        />
+      </section>
+      <article className={`text-center text-black-800 mb-6`}>
+        ※ 얼굴을 정중앙에 위치시켜 주세요. 
+      </article>
+      <section className={"flex flex-row w-full justify-center"}>
+        <button
+          className={"w-24 min-h-8 h-8 rounded-md bg-indigo-800 text-center text-white justify-center"}
+          onClick={confirmOnClick}
+        >
+          촬영
+        </button>
+      </section>
+    </section>
+  );
+}
+
