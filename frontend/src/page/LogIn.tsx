@@ -1,17 +1,34 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useCallback,} from 'react';
+import { useDispatch, useSelector } from "react-redux";
 import { TextField } from "@mui/material";
 import style from "../constant/style";
+import { AppDispatch } from '../store';
+import { getKey, selectUser, updateResults, enc } from '../store/slices/user';
+import { useNavigate } from "react-router";
 
 
 export default function LogIn() {
     const [id, setID] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const dispatch = useDispatch<AppDispatch>();
     const passwordInput = useRef<HTMLInputElement>(null);
+    const image = useSelector(selectUser).image;
+    const navigate = useNavigate();
+
+
+    const loginhandler = useCallback(() => {
+        dispatch(updateResults());
+        navigate("/upload");
+    }, [dispatch]);
+
+    const signinhandler = useCallback(() => {
+        navigate("/signup");
+    }, [dispatch]);
 
 
     return (
         <section className={style.page.base}>
-            <h1 className={"text-left text-6xl text-indigo-800 font-bold ml-24 mt-10 my-32"}>
+            <h1 className={"text-left text-7xl text-indigo-800 font-bold ml-32 mt-10 my-32"}>
                 CryptoCard
             </h1>
             <div className={"flex-1 flex flex-col justify-center items-center"}>
@@ -65,10 +82,17 @@ export default function LogIn() {
                     </div>
                     <div className={"flex flex-row w-full justify-center"}>
                         <button
-                            className={"w-48 min-h-8 h-8 rounded-md bg-indigo-800 text-center text-white justify-center"}
+                            className={"w-32 min-h-8 h-8 mx-2 rounded-md bg-indigo-800 text-center text-white justify-center"}
                             disabled={!id || !password}
+                            onClick={loginhandler}
                             >
                             로그인
+                        </button>
+                        <button
+                            className={"w-32 min-h-8 h-8 mx-2 rounded-md bg-indigo-800 text-center text-white justify-center"}
+                            onClick={signinhandler}
+                            >
+                            회원가입
                         </button>
                     </div>
                 </div>
