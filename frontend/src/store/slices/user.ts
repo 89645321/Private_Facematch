@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { Cookies } from "react-cookie";
 import axios from "axios";
 import { RootState } from "../index";
 import { HEaaNEnv } from '../../util/HEaaN';
@@ -11,6 +12,7 @@ export interface userState {
     image: Float64Array | null
     idcard: Float64Array | null
     embedding: Uint8Array | null
+    loginUser: boolean
 }
 
 const initialState: userState = {
@@ -19,6 +21,7 @@ const initialState: userState = {
     image: null,
     idcard: null,
     embedding: null,
+    loginUser: false,
 };
 
 export async function loadModels() {
@@ -86,6 +89,25 @@ export const updateResults = createAsyncThunk(
             };
             return data;
         }
+    }
+);
+
+export const fetchLogin = createAsyncThunk(
+    "user/signin",
+    async (user: { identification: string; password: string }): Promise<boolean> => {
+      try {
+        // get session token
+        const signInResponse = await axios.post("/user/login/", user);
+        if (signInResponse.status !== 200) {
+          return false;
+        }
+        const sessionToken = signInResponse.data.token;
+        const cookies = new Cookies();
+        cookies.set("sessionid", sessionToken, { path: "/" });
+        return true;
+      } catch (_) {
+        return false;
+      }
     }
 );
 
@@ -247,6 +269,12 @@ const userSlice = createSlice({
             updateID.fulfilled,
             (state, action) => {
                 state.idcard = action.payload;
+            }
+        )
+        builder.addCase(
+            fetchLogin.fulfilled,
+            (state, action) => {
+                state.loginUser = action.payload;
             }
         )
     }

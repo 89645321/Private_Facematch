@@ -1,12 +1,15 @@
-import React, {useRef, useState, useCallback,} from 'react';
+import React, {useRef, useState, useCallback, useEffect} from 'react';
+import { useCookies } from 'react-cookie';
 import { useDispatch, useSelector } from "react-redux";
 import { Modal, Box, IconButton, Typography} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
+import axios from "axios";
 
 
 export default function Account() {
     const [name, setName] = useState<string>("???");
     const [balance, setBalance] = useState<number>(348134);
+    const [cookies] = useCookies(['sessionid']);
     const [modalOpen, setModalOpen] = useState<boolean>(true);
 
     const style = {
@@ -26,7 +29,22 @@ export default function Account() {
     const handleClose = useCallback(() => {
         setModalOpen(false);
     }, [setModalOpen]);
+
+    useEffect(() => {
+        const token = cookies.sessionid;
     
+        if (!token) {
+          console.error('No session token found');
+          return;
+        }
+
+        axios.get('/user/userinfo/', {
+            params: { token: token }
+        }).then(response =>{
+            setName(response.data.name);
+            setBalance(response.data.balance);
+        })
+    }, [cookies]);
     
     return (
         <section className={""}>
@@ -46,7 +64,7 @@ export default function Account() {
                     </IconButton>
                     </Box>
                 </Modal>
-                </div>
+            </div>
             <h1 className={"text-left text-7xl text-indigo-800 font-bold ml-32 mt-10 my-32"}>
                 CryptoCard
             </h1>

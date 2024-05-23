@@ -1,33 +1,84 @@
-import React, {useRef, useState, useCallback,} from 'react';
+import React, {useRef, useEffect, useState, useCallback,} from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { TextField } from "@mui/material";
 import style from "../constant/style";
+import paths from "../constant/path";
 import { AppDispatch } from '../store';
-import { getKey, selectUser, updateResults, enc } from '../store/slices/user';
+import { selectUser, fetchLogin } from '../store/slices/user';
+import { Modal, Box, IconButton, Typography} from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from "react-router";
 
 
 export default function LogIn() {
     const [id, setID] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
     const dispatch = useDispatch<AppDispatch>();
     const passwordInput = useRef<HTMLInputElement>(null);
-    const image = useSelector(selectUser).image;
+    const loginUser = useSelector(selectUser).loginUser;
     const navigate = useNavigate();
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 300,
+        bgcolor: 'background.paper',
+        boxShadow: 24,
+        p: 4,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    };
+
+    useEffect(() => {
+        if (loginUser) {
+            navigate("/upload");
+        }
+    }, [navigate, loginUser]);
 
 
     const loginhandler = useCallback(() => {
-        dispatch(updateResults());
-        navigate("/upload");
-    }, [dispatch]);
+        const loginData = {
+            identification: id,
+            password: password,
+        };
+        dispatch(fetchLogin(loginData)).then((response) => {
+            if (response.payload === false) {
+                setModalOpen(true);
+            }
+        });
+    }, [id, password, dispatch]);
 
     const signinhandler = useCallback(() => {
         navigate("/signup");
     }, [dispatch]);
 
+    const handleClose = useCallback(() => {
+        setModalOpen(false);
+    }, [setModalOpen]);
 
     return (
-        <section className={style.page.base}>
+        <section className={""}>
+            <div>
+                <Modal
+                    open={modalOpen}
+                    onClose={handleClose}
+                    aria-labelledby="modal-title"
+                    aria-describedby="modal-description"
+                >
+                    <Box sx={style} className={"rounded-md text-center w-16 max-w-xs h-8"}>
+                    <Typography id="modal-title" variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
+                        로그인에 실패하였습니다.
+                    </Typography>
+                    <IconButton onClick={handleClose}>
+                        <CloseIcon />
+                    </IconButton>
+                    </Box>
+                </Modal>
+            </div>
             <h1 className={"text-left text-7xl text-indigo-800 font-bold ml-32 mt-10 my-32"}>
                 CryptoCard
             </h1>

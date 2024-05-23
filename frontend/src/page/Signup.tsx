@@ -1,6 +1,7 @@
-import React, {useRef, useState, useCallback,} from 'react';
+import React, {useRef, useState, useEffect, useCallback,} from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { TextField } from "@mui/material";
+import axios from "axios";
 import style from "../constant/style";
 import { AppDispatch } from '../store';
 import { getKey, selectUser, updateResults, enc } from '../store/slices/user';
@@ -14,12 +15,24 @@ export default function SignUp() {
     const dispatch = useDispatch<AppDispatch>();
     const passwordInput = useRef<HTMLInputElement>(null);
     const image = useSelector(selectUser).image;
+    const loginUser = useSelector(selectUser).loginUser;
     const navigate = useNavigate();
 
 
-    const signuphandler = useCallback(() => {
+    useEffect(() => {
+        if (loginUser) {
+            navigate("/upload");
+        }
+    }, [navigate, loginUser]);
+
+    const signuphandler = useCallback(async () => {
+        await axios.post("/user/signup/", {
+            identification: id,
+            password: password,
+            name: name
+        });
         navigate("/login");
-    }, [dispatch]);
+    }, [navigate, id, password, name]);
 
 
     return (
@@ -63,6 +76,7 @@ export default function SignUp() {
                             }}
                         size={"small"}
                         placeholder={"비밀번호"}
+                        type={"password"}
                         variant={"outlined"}
                         value={password}
                         onChange={(e) => {
@@ -86,9 +100,9 @@ export default function SignUp() {
                         size={"small"}
                         placeholder={"이름"}
                         variant={"outlined"}
-                        value={password}
+                        value={name}
                         onChange={(e) => {
-                            setPassword(e.target.value);
+                            setName(e.target.value);
                         }}
                         onKeyUp={(e) => {
                         if (e.key === "Enter") {
