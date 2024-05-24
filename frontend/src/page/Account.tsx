@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Modal, Box, IconButton, Typography} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import axios from "axios";
+import CreditCardIcon from '@mui/icons-material/CreditCard';
 
 
 export default function Account() {
@@ -65,9 +66,12 @@ export default function Account() {
                     </Box>
                 </Modal>
             </div>
-            <h1 className={"text-left text-7xl text-indigo-800 font-bold ml-32 mt-10 my-32"}>
-                CryptoCard
-            </h1>
+            <div className={"flex flex-row items-center ml-12  mt-10 my-32"}>
+                <CreditCardIcon sx={{ fontSize: 60, color: "#3730A3" }}/>
+                <h1 className={"text-left text-7xl text-indigo-800 ml-4 font-bold"}>
+                    CryptoCard
+                </h1>
+            </div>
             <div className={"flex-1 flex flex-col justify-center items-center"}>
                 <div className={"box-border box-decoration-slice bg-gradient-to-b from-black to-indigo-800 h-96 w-2/3 border-2 justify-center items-center"}>
                     <div className={"ml-20 mt-10 my-10"}>

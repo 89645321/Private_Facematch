@@ -6,6 +6,7 @@ import style from "../constant/style";
 import { AppDispatch } from '../store';
 import { getKey, selectUser, updateResults, enc } from '../store/slices/user';
 import { useNavigate } from "react-router";
+import CreditCardIcon from '@mui/icons-material/CreditCard';
 
 
 export default function SignUp() {
@@ -37,9 +38,12 @@ export default function SignUp() {
 
     return (
         <section className={style.page.base}>
-            <h1 className={"text-left text-7xl text-indigo-800 font-bold ml-32 mt-10 my-32"}>
-                CryptoCard
-            </h1>
+            <div className={"flex flex-row items-center ml-12  mt-10 my-32"}>
+                <CreditCardIcon sx={{ fontSize: 60, color: "#3730A3" }}/>
+                <h1 className={"text-left text-7xl text-indigo-800 ml-4 font-bold"}>
+                    CryptoCard
+                </h1>
+            </div>
             <div className={"flex-1 flex flex-col justify-center items-center"}>
                 <div className={"box-border h-96 w-3/5 border-2 justify-center items-center"}>
                     <h2 className={"text-center text-5xl text-indigo-800 font-bold mt-10 my-10"}>
