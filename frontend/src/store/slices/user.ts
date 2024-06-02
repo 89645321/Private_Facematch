@@ -7,11 +7,12 @@ import * as faceapi from 'face-api.js';
 
 
 export interface userState {
-    key: null | Uint8Array
+    key: Uint8Array | null
     loading: boolean
     image: Float64Array | null
     idcard: Float64Array | null
     embedding: Uint8Array | null
+    sim : Float64Array | null
     loginUser: boolean
 }
 
@@ -21,6 +22,7 @@ const initialState: userState = {
     image: null,
     idcard: null,
     embedding: null,
+    sim: null,
     loginUser: false,
 };
 
@@ -154,12 +156,55 @@ export const updateID = createAsyncThunk(
                 inputImgEl.onerror = () => reject(new Error('Failed to load image'));
             });
 
-            const options = new faceapi.TinyFaceDetectorOptions();
-
             const detections = await faceapi.detectAllFaces(inputImgEl).withFaceLandmarks().withFaceDescriptors();
             const faceEmbedding = detections[0].descriptor;
             const normalize_emb = normalize(new Float64Array(faceEmbedding));
             return normalize_emb;
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
+    }
+);
+
+export const cosine_sim = createAsyncThunk(
+    "user/cosine_sim",
+    async (data: {photo:Float64Array | null, id:Float64Array | null, key:Uint8Array | null}) => {
+        try{
+            const { photo, id, key } = data;
+            console.log(photo);
+            console.log(id);
+            console.log(key);
+            if (photo != null && id != null) {
+                const photo_byte = new Uint8Array(photo.buffer);
+                const id_byte = new Uint8Array(id.buffer);
+
+                const face_blob = new Blob([photo_byte], { type: 'application/octet-stream' });
+                const face = new File([face_blob], 'face.bin', { type: 'application/octet-stream' });
+
+                const id_blob = new Blob([id_byte], { type: 'application/octet-stream' });
+                const id_card = new File([id_blob], 'id.bin', { type: 'application/octet-stream' });
+
+                const formData = new FormData();
+                formData.append('face', face);
+                formData.append('id_card', id_card);
+
+                const response = await axios.post("/user/similarity/", formData);
+                const similarityData = await response.data.arrayBuffer();
+
+                if (key != null){
+                    const heaan = await new HEaaNEnv("IDASH");
+                    await heaan.setEncKey(key);
+                    const dec = await heaan.decrypt(similarityData);
+                    return dec;
+                }
+                else{
+                    return null;
+                }
+            }
+            else{
+                return null;
+            }
         } catch (e) {
             console.error(e);
             return null;
@@ -275,6 +320,12 @@ const userSlice = createSlice({
             fetchLogin.fulfilled,
             (state, action) => {
                 state.loginUser = action.payload;
+            }
+        )
+        builder.addCase(
+            cosine_sim.fulfilled,
+            (state, action) => {
+                state.sim = action.payload;
             }
         )
     }

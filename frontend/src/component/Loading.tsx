@@ -2,6 +2,10 @@ import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
+import { useDispatch, useSelector } from "react-redux";
+import { cosine_sim, selectUser } from "../store/slices/user";
+import { AppDispatch } from "../store";
+import { useNavigate } from "react-router";
 
 
 export interface IProps {
@@ -9,11 +13,26 @@ export interface IProps {
 }
 
 const Loading = ({setStep} : IProps) => {
+    const key = useSelector(selectUser).key;
+    const photo = useSelector(selectUser).image;
+    const id = useSelector(selectUser).idcard;
+    const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setStep(0);
-        }, 5000);
+        const data = {
+            photo: photo,
+            id: id,
+            key: key
+        }
+        dispatch(cosine_sim(data)).then((response) => {
+            if (response.payload == null){
+                setStep(0);
+            }
+            else{
+                navigate("/account");
+            }
+        })
     }, []);
     return (
         <section className={""}>
