@@ -12,6 +12,7 @@ export default function Account() {
     const [balance, setBalance] = useState<number>(348134);
     const [cookies] = useCookies(['sessionid']);
     const [modalOpen, setModalOpen] = useState<boolean>(true);
+    const backendUrl = '';
 
     const style = {
         position: 'absolute',
@@ -39,7 +40,7 @@ export default function Account() {
           return;
         }
 
-        axios.get('/user/userinfo/', {
+        axios.get(`${backendUrl}/user/userinfo/`, {
             params: { token: token }
         }).then(response =>{
             setName(response.data.name);

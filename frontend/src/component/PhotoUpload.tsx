@@ -20,13 +20,11 @@ const initPhotoInfo = (): PhotoInfo => (
 );
 
 export interface IProps {
-  setPhoto: Dispatch<SetStateAction<Float64Array | null>>;
   setStep: Dispatch<SetStateAction<number>>;
 }
 
 export default function PhotoUpload({
-  setPhoto,
-  setStep,
+  setStep
 }: IProps) {
   const [photoInfos, setPhotoInfos] = useState<PhotoInfo>(initPhotoInfo());
   const dispatch = useDispatch<AppDispatch>();
@@ -41,7 +39,7 @@ export default function PhotoUpload({
   const confirmOnClick = useCallback(() => {
     dispatch(updatePhoto(photoInfos.src));
     setStep(1);
-  }, [photoInfos, setPhoto, setStep]);
+  }, [photoInfos, setStep]);
 
 
   return (

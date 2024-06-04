@@ -12,18 +12,16 @@ export interface IProps {
     setStep: Dispatch<SetStateAction<number>>;
 }
 
-const Loading = ({setStep} : IProps) => {
-    const key = useSelector(selectUser).key;
-    const photo = useSelector(selectUser).image;
-    const id = useSelector(selectUser).idcard;
+export default function({setStep} : IProps) {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
+    const photo = useSelector(selectUser).image;
+    const id = useSelector(selectUser).idcard;
 
     useEffect(() => {
         const data = {
             photo: photo,
-            id: id,
-            key: key
+            id: id
         }
         dispatch(cosine_sim(data)).then((response) => {
             if (response.payload == null){
@@ -52,4 +50,3 @@ const Loading = ({setStep} : IProps) => {
     );
 };
 
-export default Loading;

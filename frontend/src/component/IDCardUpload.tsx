@@ -20,12 +20,10 @@ const initPhotoInfo = (): PhotoInfo => (
 );
 
 export interface IProps {
-  setPhoto: Dispatch<SetStateAction<Float64Array | null>>;
   setStep: Dispatch<SetStateAction<number>>;
 }
 
 export default function IDCardUpload({
-  setPhoto,
   setStep,
 }: IProps) {
   const [photoInfos, setPhotoInfos] = useState<PhotoInfo>(initPhotoInfo());
@@ -41,7 +39,7 @@ export default function IDCardUpload({
   const confirmOnClick = useCallback(() => {
     dispatch(updateID(photoInfos.src));
     setStep(2);
-  }, [photoInfos, setPhoto, setStep]);
+  }, [photoInfos, setStep]);
 
 
   return (

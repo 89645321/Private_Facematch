@@ -6,6 +6,7 @@ import { HEaaNEnv } from '../../util/HEaaN';
 import * as faceapi from 'face-api.js';
 
 
+const backendUrl = '';
 export interface userState {
     key: Uint8Array | null
     loading: boolean
@@ -96,17 +97,16 @@ export const updateResults = createAsyncThunk(
 
 export const fetchLogin = createAsyncThunk(
     "user/signin",
-    async (user: { identification: string; password: string }): Promise<boolean> => {
-      try {
-        // get session token
-        const signInResponse = await axios.post("/user/login/", user);
-        if (signInResponse.status !== 200) {
-          return false;
-        }
-        const sessionToken = signInResponse.data.token;
-        const cookies = new Cookies();
-        cookies.set("sessionid", sessionToken, { path: "/" });
-        return true;
+    async (user: { identification: string; password: string }) => {
+        try {
+            const signInResponse = await axios.post(`${backendUrl}/user/login/`, user);
+            if (signInResponse.status !== 200) {
+                return false;
+            }
+            const sessionToken = signInResponse.data.token;
+            const cookies = new Cookies();
+            cookies.set("sessionid", sessionToken, { path: "/" });
+            return true;
       } catch (_) {
         return false;
       }
@@ -143,7 +143,7 @@ export const updatePhoto = createAsyncThunk(
 
 export const updateID = createAsyncThunk(
     "faceDetection/updateID",
-    async (src:string) => {
+    async (src:string): Promise<Float64Array | null> => {
         try {
             if (!faceapi.nets.faceRecognitionNet.isLoaded) {
                 await loadModels();
@@ -169,38 +169,42 @@ export const updateID = createAsyncThunk(
 
 export const cosine_sim = createAsyncThunk(
     "user/cosine_sim",
-    async (data: {photo:Float64Array | null, id:Float64Array | null, key:Uint8Array | null}) => {
+    async (data: {photo:Float64Array | null, id:Float64Array | null}) => {
         try{
-            const { photo, id, key } = data;
+            const { photo, id } = data;
             console.log(photo);
             console.log(id);
-            console.log(key);
             if (photo != null && id != null) {
-                const photo_byte = new Uint8Array(photo.buffer);
-                const id_byte = new Uint8Array(id.buffer);
+                const heaan = await new HEaaNEnv("IDASH");
+                await heaan.genSk();
+                await heaan.genEncKey();
 
-                const face_blob = new Blob([photo_byte], { type: 'application/octet-stream' });
+                const photo_enc = await heaan.encrypt(photo);
+                const id_enc = await heaan.encrypt(id);
+
+    
+                const face_blob = new Blob([photo_enc], { type: 'application/octet-stream' });
                 const face = new File([face_blob], 'face.bin', { type: 'application/octet-stream' });
-
-                const id_blob = new Blob([id_byte], { type: 'application/octet-stream' });
+    
+                const id_blob = new Blob([id_enc], { type: 'application/octet-stream' });
                 const id_card = new File([id_blob], 'id.bin', { type: 'application/octet-stream' });
-
+    
                 const formData = new FormData();
                 formData.append('face', face);
                 formData.append('id_card', id_card);
-
-                const response = await axios.post("/user/similarity/", formData);
-                const similarityData = await response.data.arrayBuffer();
-
-                if (key != null){
-                    const heaan = await new HEaaNEnv("IDASH");
-                    await heaan.setEncKey(key);
-                    const dec = await heaan.decrypt(similarityData);
-                    return dec;
-                }
-                else{
-                    return null;
-                }
+    
+                const response = await axios.post(`${backendUrl}/user/similarity/`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                    responseType: 'arraybuffer',
+                });
+                
+                const similarityData = new Uint8Array(response.data);
+                const dec = await heaan.decrypt(similarityData);
+                console.log(dec);
+                console.log(dec[0] * (1 << 10));
+                return dec[0] * (1 << 10);
             }
             else{
                 return null;
@@ -211,6 +215,7 @@ export const cosine_sim = createAsyncThunk(
         }
     }
 );
+
 
 export function normalize(array: Float64Array): Float64Array {
     if (array.length === 0) {
@@ -320,12 +325,6 @@ const userSlice = createSlice({
             fetchLogin.fulfilled,
             (state, action) => {
                 state.loginUser = action.payload;
-            }
-        )
-        builder.addCase(
-            cosine_sim.fulfilled,
-            (state, action) => {
-                state.sim = action.payload;
             }
         )
     }

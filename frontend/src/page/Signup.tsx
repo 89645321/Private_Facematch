@@ -18,7 +18,7 @@ export default function SignUp() {
     const image = useSelector(selectUser).image;
     const loginUser = useSelector(selectUser).loginUser;
     const navigate = useNavigate();
-
+    const backendUrl = '';
 
     useEffect(() => {
         if (loginUser) {
@@ -27,7 +27,7 @@ export default function SignUp() {
     }, [navigate, loginUser]);
 
     const signuphandler = useCallback(async () => {
-        await axios.post("/user/signup/", {
+        await axios.post(`${backendUrl}/user/signup/`, {
             identification: id,
             password: password,
             name: name
