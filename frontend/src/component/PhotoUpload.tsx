@@ -1,11 +1,11 @@
-import React, { Dispatch, SetStateAction, useCallback, useMemo, useState } from "react";
-import style from "../constant/style";
+import React, { Dispatch, SetStateAction, useCallback, useState, useEffect} from "react";
 import ImageUploadIcon from "./ImageUploadIcon"
-import * as faceapi from 'face-api.js';
-import { loadModels, normalize, updatePhoto } from "../store/slices/user";
+import { updatePhoto } from "../store/slices/user";
 import { AppDispatch } from "../store";
 import { useDispatch } from "react-redux";
 import CreditCardIcon from '@mui/icons-material/CreditCard';
+import { Modal, Box, IconButton, Typography} from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 
 
 type PhotoInfo = {
@@ -23,8 +23,8 @@ export interface IProps {
   setStep: Dispatch<SetStateAction<number>>;
 }
 
-export default function PhotoUpload({
-  setStep
+export default function PhotoUpload({ 
+  setStep, 
 }: IProps) {
   const [photoInfos, setPhotoInfos] = useState<PhotoInfo>(initPhotoInfo());
   const dispatch = useDispatch<AppDispatch>();
@@ -40,10 +40,9 @@ export default function PhotoUpload({
     dispatch(updatePhoto(photoInfos.src));
     setStep(1);
   }, [photoInfos, setStep]);
-
-
+  
   return (
-    <section className={style.page.base}>
+    <section className={""}>
         <div className={"flex flex-row items-center ml-12  mt-10 my-32"}>
                 <CreditCardIcon sx={{ fontSize: 60, color: "#3730A3" }}/>
                 <h1 className={"text-left text-7xl text-indigo-800 ml-4 font-bold"}>
@@ -73,3 +72,4 @@ export default function PhotoUpload({
     </section>
   );
 }
+

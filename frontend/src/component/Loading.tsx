@@ -1,5 +1,6 @@
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
-import { Box, Typography } from '@mui/material';
+import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react';
+import { Box, IconButton, Modal, Typography } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import CircularProgress from '@mui/material/CircularProgress';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { useDispatch, useSelector } from "react-redux";
@@ -10,9 +11,12 @@ import { useNavigate } from "react-router";
 
 export interface IProps {
     setStep: Dispatch<SetStateAction<number>>;
+    setModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function({setStep} : IProps) {
+export default function Loading({setStep, 
+    setModalOpen,
+    } : IProps) {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const photo = useSelector(selectUser).image;
@@ -23,15 +27,29 @@ export default function({setStep} : IProps) {
             photo: photo,
             id: id
         }
-        dispatch(cosine_sim(data)).then((response) => {
-            if (response.payload == null){
-                setStep(0);
-            }
-            else{
-                navigate("/account");
-            }
-        })
-    }, []);
+        if(typeof photo === null || typeof id === null){
+            setModalOpen(true);
+            setStep(0);
+        }
+        else{
+            dispatch(cosine_sim(data)).then((response) => {
+                if (response.payload == null){
+                    setModalOpen(true);
+                    setStep(0);
+                }
+                else{
+                    if(typeof response.payload == 'number' && response.payload < 0.98){
+                        setModalOpen(true);
+                        setStep(0);
+                    }
+                    else{
+                        navigate("/account");
+                    }
+                }
+           })
+        }
+    }, [setModalOpen, setStep]);
+
     return (
         <section className={""}>
             <div className={"flex flex-row items-center ml-12  mt-10 my-48"}>

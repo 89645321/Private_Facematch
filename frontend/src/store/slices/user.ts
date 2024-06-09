@@ -4,9 +4,9 @@ import axios from "axios";
 import { RootState } from "../index";
 import { HEaaNEnv } from '../../util/HEaaN';
 import * as faceapi from 'face-api.js';
+import { backendUrl } from "../url";
 
 
-const backendUrl = '';
 export interface userState {
     key: Uint8Array | null
     loading: boolean
@@ -14,7 +14,7 @@ export interface userState {
     idcard: Float64Array | null
     embedding: Uint8Array | null
     sim : Float64Array | null
-    loginUser: boolean
+    token: string | null
 }
 
 const initialState: userState = {
@@ -24,7 +24,7 @@ const initialState: userState = {
     idcard: null,
     embedding: null,
     sim: null,
-    loginUser: false,
+    token: null,
 };
 
 export async function loadModels() {
@@ -106,9 +106,9 @@ export const fetchLogin = createAsyncThunk(
             const sessionToken = signInResponse.data.token;
             const cookies = new Cookies();
             cookies.set("sessionid", sessionToken, { path: "/" });
-            return true;
+            return sessionToken;
       } catch (_) {
-        return false;
+        return null;
       }
     }
 );
@@ -173,7 +173,6 @@ export const cosine_sim = createAsyncThunk(
         try{
             const { photo, id } = data;
             console.log(photo);
-            console.log(id);
             if (photo != null && id != null) {
                 const heaan = await new HEaaNEnv("IDASH");
                 await heaan.genSk();
@@ -324,7 +323,7 @@ const userSlice = createSlice({
         builder.addCase(
             fetchLogin.fulfilled,
             (state, action) => {
-                state.loginUser = action.payload;
+                state.token = action.payload;
             }
         )
     }

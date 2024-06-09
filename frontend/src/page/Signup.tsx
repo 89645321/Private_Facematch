@@ -7,6 +7,7 @@ import { AppDispatch } from '../store';
 import { getKey, selectUser, updateResults, enc } from '../store/slices/user';
 import { useNavigate } from "react-router";
 import CreditCardIcon from '@mui/icons-material/CreditCard';
+import { backendUrl } from "../store/url";
 
 
 export default function SignUp() {
@@ -16,15 +17,14 @@ export default function SignUp() {
     const dispatch = useDispatch<AppDispatch>();
     const passwordInput = useRef<HTMLInputElement>(null);
     const image = useSelector(selectUser).image;
-    const loginUser = useSelector(selectUser).loginUser;
+    const isLogin = useSelector(selectUser).token;
     const navigate = useNavigate();
-    const backendUrl = '';
 
     useEffect(() => {
-        if (loginUser) {
+        if (isLogin) {
             navigate("/upload");
         }
-    }, [navigate, loginUser]);
+    }, [navigate, isLogin]);
 
     const signuphandler = useCallback(async () => {
         await axios.post(`${backendUrl}/user/signup/`, {
@@ -37,7 +37,7 @@ export default function SignUp() {
 
 
     return (
-        <section className={style.page.base}>
+        <section className={""}>
             <div className={"flex flex-row items-center ml-12  mt-10 my-32"}>
                 <CreditCardIcon sx={{ fontSize: 60, color: "#3730A3" }}/>
                 <h1 className={"text-left text-7xl text-indigo-800 ml-4 font-bold"}>

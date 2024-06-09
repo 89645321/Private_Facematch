@@ -3,8 +3,12 @@ import { useCookies } from 'react-cookie';
 import { useDispatch, useSelector } from "react-redux";
 import { Modal, Box, IconButton, Typography} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
+import style from "../constant/style";
 import axios from "axios";
 import CreditCardIcon from '@mui/icons-material/CreditCard';
+import { backendUrl } from "../store/url";
+import { selectUser } from "../store/slices/user";
+import { useNavigate } from "react-router";
 
 
 export default function Account() {
@@ -12,41 +16,24 @@ export default function Account() {
     const [balance, setBalance] = useState<number>(348134);
     const [cookies] = useCookies(['sessionid']);
     const [modalOpen, setModalOpen] = useState<boolean>(true);
-    const backendUrl = '';
-
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 300,
-        bgcolor: 'background.paper',
-        boxShadow: 24,
-        p: 4,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      };
+    const token = useSelector(selectUser).token;
+    const navigate = useNavigate();
 
     const handleClose = useCallback(() => {
         setModalOpen(false);
     }, [setModalOpen]);
 
     useEffect(() => {
-        const token = cookies.sessionid;
-    
         if (!token) {
-          console.error('No session token found');
-          return;
+            navigate("/login");
         }
-
         axios.get(`${backendUrl}/user/userinfo/`, {
             params: { token: token }
         }).then(response =>{
             setName(response.data.name);
             setBalance(response.data.balance);
         })
-    }, [cookies]);
+    },  [token]);
     
     return (
         <section className={""}>
