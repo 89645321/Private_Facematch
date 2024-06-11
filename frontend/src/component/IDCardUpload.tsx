@@ -5,8 +5,7 @@ import * as faceapi from 'face-api.js';
 import { loadModels, normalize, updateID } from "../store/slices/user";
 import { AppDispatch } from "../store";
 import { useDispatch } from "react-redux";
-import CreditCardIcon from '@mui/icons-material/CreditCard';
-
+import CryptoCard from "./CryptoCard";
 
 type PhotoInfo = {
   file: File | null;
@@ -44,17 +43,11 @@ export default function IDCardUpload({
     .catch((error) => {
       console.error('Update ID failed:', error);
     });
-}, [dispatch, photoInfos, setStep]);
-
+  }, [dispatch, photoInfos.src, setStep]);
 
   return (
     <section className={""}>
-        <div className={"flex flex-row items-center ml-12  mt-10 my-32"}>
-                <CreditCardIcon sx={{ fontSize: 60, color: "#3730A3" }}/>
-                <h1 className={"text-left text-7xl text-indigo-800 ml-4 font-bold"}>
-                    CryptoCard
-                </h1>
-        </div>
+        <CryptoCard setStep={setStep}/>
         <h2 className={"text-center text-2xl text-black-800 font-bold mt-10 my-4"}>
             본인 인증
         </h2>

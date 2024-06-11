@@ -116,7 +116,7 @@ export default function LogIn() {
                         }}
                         onKeyUp={(e) => {
                         if (e.key === "Enter") {
-                            passwordInput.current?.focus();
+                            loginhandler();
                         }
                         }}
                         required

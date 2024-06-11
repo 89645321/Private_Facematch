@@ -28,7 +28,7 @@ export default function Upload() {
         setModal(false);
     }, [setModal]);
 
-    const getPage = useCallback((tep: number): JSX.Element => {
+    const getPage = useCallback((step: number): JSX.Element => {
         switch (step) {
         case 0:
             return (

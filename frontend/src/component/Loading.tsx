@@ -1,13 +1,12 @@
-import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 import { Box, IconButton, Modal, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CircularProgress from '@mui/material/CircularProgress';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { useDispatch, useSelector } from "react-redux";
 import { cosine_sim, selectUser } from "../store/slices/user";
 import { AppDispatch } from "../store";
 import { useNavigate } from "react-router";
-
+import CryptoCard from "./CryptoCard";
 
 export interface IProps {
     setStep: Dispatch<SetStateAction<number>>;
@@ -22,6 +21,10 @@ export default function Loading({setStep,
     const photo = useSelector(selectUser).image;
     const id = useSelector(selectUser).idcard;
 
+    const [loading, setLoading] = useState<boolean>(false);
+
+    
+
     useEffect(() => {
         const data = {
             photo: photo,
@@ -32,32 +35,33 @@ export default function Loading({setStep,
             setStep(0);
         }
         else{
-            dispatch(cosine_sim(data)).then((response) => {
-                if (response.payload == null){
-                    setModalOpen(true);
-                    setStep(0);
-                }
-                else{
-                    if(typeof response.payload == 'number' && response.payload < 0.98){
+            // prevent duplicated request by using loading state
+            setLoading((prevLoading: boolean) => {
+                if (prevLoading === true) return true;
+                dispatch(cosine_sim(data)).then((response) => {
+                    if (response.payload == null){
                         setModalOpen(true);
                         setStep(0);
                     }
                     else{
-                        navigate("/account");
+                        if(typeof response.payload == 'number' && response.payload < 0.98){
+                            setModalOpen(true);
+                            setStep(0);
+                        }
+                        else{
+                            navigate("/account");
+                        }
                     }
-                }
-           })
+                    setLoading(false);
+                })
+                return true;
+            });
         }
     }, [setModalOpen, setStep]);
 
     return (
         <section className={""}>
-            <div className={"flex flex-row items-center ml-12  mt-10 my-48"}>
-                <CreditCardIcon sx={{ fontSize: 60, color: "#3730A3" }}/>
-                <h1 className={"text-left text-7xl text-indigo-800 ml-4 font-bold"}>
-                    CryptoCard
-                </h1>
-            </div>
+            <CryptoCard setStep={setStep} />
             <div className={"flex-1 flex flex-col justify-center items-center"}>
                 <CircularProgress size={80} />
                 <h2 className={"text-center text-2xl text-black font-bold mt-20 my-10"}>
