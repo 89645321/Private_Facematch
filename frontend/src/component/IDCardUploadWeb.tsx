@@ -35,7 +35,7 @@ export default function PhotoUpload({ setStep }: IProps) {
     if (imageSrc) {
       const file = dataURLtoFile(imageSrc, "captured_photo.jpg");
       setPhotoInfos({ file, src: imageSrc });
-      setCapturedImage(imageSrc); // Save the captured image
+      setCapturedImage(imageSrc);
     }
   }, [webcamRef, setPhotoInfos]);
 
@@ -74,14 +74,14 @@ export default function PhotoUpload({ setStep }: IProps) {
       </h2>
       <section className={"flex-1 flex flex-col justify-center items-center"}>
         {capturedImage ? (
-          <img src={capturedImage} alt="Captured" width={320} height={240} />
+          <img src={capturedImage} alt="Captured" width={480} height={320} />
         ) : (
           <Webcam
             audio={false}
             ref={webcamRef}
             screenshotFormat="image/jpeg"
-            width={320}
-            height={240}
+            width={480}
+            height={320}
           />
         )}
       </section>

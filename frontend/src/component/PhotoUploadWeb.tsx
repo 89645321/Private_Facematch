@@ -64,19 +64,19 @@ export default function PhotoUpload({ setStep }: IProps) {
   return (
     <section className={""}>
       <CryptoCard setStep={setStep} />
-      <h2 className={"text-center text-2xl text-black-800 font-bold mt-10 my-4"}>
+      <h2 className={"text-center text-2xl text-black-800 font-bold my-4"}>
         본인 인증
       </h2>
       <section className={"flex-1 flex flex-col justify-center items-center"}>
         {capturedImage ? (
-          <img src={capturedImage} alt="Captured" width={320} height={240} />
+          <img src={capturedImage} alt="Captured" width={480} height={320} />
         ) : (
           <Webcam
             audio={false}
             ref={webcamRef}
             screenshotFormat="image/jpeg"
-            width={320}
-            height={240}
+            width={480}
+            height={320}
           />
         )}
       </section>

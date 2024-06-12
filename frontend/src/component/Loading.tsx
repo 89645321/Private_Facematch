@@ -44,7 +44,7 @@ export default function Loading({setStep,
                         setStep(0);
                     }
                     else{
-                        if(typeof response.payload == 'number' && response.payload < 0.97){
+                        if(typeof response.payload == 'number' && response.payload < 0.95){
                             setModalOpen(true);
                             setStep(0);
                         }

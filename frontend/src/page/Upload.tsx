@@ -5,6 +5,7 @@ import style from "../constant/style";
 import PhotoUpload from "../component/PhotoUpload";
 import PhotoUploadWeb from "../component/PhotoUploadWeb";
 import IDCardUpload from "../component/IDCardUpload";
+import IDCardUploadWeb from "../component/IDCardUploadWeb";
 import Loading from "../component/Loading";
 import { selectUser } from "../store/slices/user";
 import { Modal, Box, IconButton, Typography} from "@mui/material";
@@ -29,7 +30,7 @@ export default function Upload() {
         setModal(false);
     }, [setModal]);
 
-    const getPage = useCallback((tep: number): JSX.Element => {
+    const getPage = useCallback((step: number): JSX.Element => {
         switch (step) {
         case 0:
             return (
@@ -49,13 +50,13 @@ export default function Upload() {
                         </IconButton>
                         </Box>
                     </Modal>
-                    <PhotoUpload
+                    <PhotoUploadWeb
                         setStep={setStep}
                     />;
                 </section>
             );
         case 1:
-            return <IDCardUpload
+            return <IDCardUploadWeb
                 setStep={setStep}
             />;
         case 2:
