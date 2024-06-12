@@ -16,6 +16,7 @@ export default function Upload() {
     const [step, setStep] = useState<number>(0);
     const [modal, setModal] = useState<boolean>(false);
     const isLogin = useSelector(selectUser).token;
+    const cosine_sim = useSelector(selectUser).sim;
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -38,9 +39,10 @@ export default function Upload() {
                         aria-labelledby="modal-title"
                         aria-describedby="modal-description"
                     >
-                        <Box sx={style} className={"rounded-md text-center w-16 max-w-xs h-8"}>
+                        <Box sx={style} className={"rounded-md text-center w-16 max-w-xs h-32"}>
                         <Typography id="modal-title" variant="h6" component="h2" sx={{ fontWeight: 'bold', fontSize: '1.0rem'}}>
-                            인증에 실패하였습니다.
+                            인증에 실패하였습니다. <br/>
+                            cosine similarity : {cosine_sim}
                         </Typography>
                         <IconButton onClick={handleClose}>
                             <CloseIcon />
