@@ -28,7 +28,7 @@ export default function Upload() {
         setModal(false);
     }, [setModal]);
 
-    const getPage = useCallback((step: number): JSX.Element => {
+    const getPage = useCallback((tep: number): JSX.Element => {
         switch (step) {
         case 0:
             return (
@@ -47,7 +47,7 @@ export default function Upload() {
                         </IconButton>
                         </Box>
                     </Modal>
-                    <PhotoUploadWeb
+                    <PhotoUpload
                         setStep={setStep}
                     />;
                 </section>

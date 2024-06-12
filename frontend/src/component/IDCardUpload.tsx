@@ -30,7 +30,6 @@ export default function IDCardUpload({
 
   const setIthPhoto = useCallback((file: File) => {
     const newPhoto = { file, src: URL.createObjectURL(file) };
-    console.log(newPhoto.src);
     setPhotoInfos(newPhoto);
   }, [photoInfos, setPhotoInfos]);
 

@@ -26,6 +26,10 @@ export default function SignUp() {
         }
     }, [navigate, isLogin]);
 
+    const navigateLogin = useCallback(() => {
+        navigate("/login");
+    }, []);
+
     const signuphandler = useCallback(async () => {
         await axios.post(`${backendUrl}/user/signup/`, {
             identification: id,
@@ -39,7 +43,7 @@ export default function SignUp() {
     return (
         <section className={""}>
             <div className={"flex flex-row items-center ml-12  mt-10 my-32"}>
-                <CreditCardIcon sx={{ fontSize: 60, color: "#3730A3" }}/>
+                <CreditCardIcon sx={{ fontSize: 60, color: "#3730A3" }} onClick={navigateLogin}/>
                 <h1 className={"text-left text-7xl text-indigo-800 ml-4 font-bold"}>
                     CryptoCard
                 </h1>

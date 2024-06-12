@@ -14,14 +14,18 @@ import { useNavigate } from "react-router";
 export default function Account() {
     const [name, setName] = useState<string>("???");
     const [balance, setBalance] = useState<number>(348134);
-    const [cookies] = useCookies(['sessionid']);
     const [modalOpen, setModalOpen] = useState<boolean>(true);
     const token = useSelector(selectUser).token;
+    const cosine_sim = useSelector(selectUser).sim;
     const navigate = useNavigate();
 
     const handleClose = useCallback(() => {
         setModalOpen(false);
     }, [setModalOpen]);
+
+    const navigateUpload = useCallback(() => {
+        navigate("/upload");
+    }, []);
 
     useEffect(() => {
         if (!token) {
@@ -44,9 +48,10 @@ export default function Account() {
                     aria-labelledby="modal-title"
                     aria-describedby="modal-description"
                 >
-                    <Box sx={style} className={"rounded-md text-center w-4/5 max-w-xs h-8"}>
+                    <Box sx={style} className={"rounded-md text-center w-4/5 max-w-xs h-32"}>
                     <Typography id="modal-title" variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
-                        인증에 성공하였습니다.
+                        인증에 성공하였습니다. <br/>
+                        cosine similarity : {cosine_sim}
                     </Typography>
                     <IconButton onClick={handleClose}>
                         <CloseIcon />
@@ -55,7 +60,7 @@ export default function Account() {
                 </Modal>
             </div>
             <div className={"flex flex-row items-center ml-12  mt-10 my-32"}>
-                <CreditCardIcon sx={{ fontSize: 60, color: "#3730A3" }}/>
+                <CreditCardIcon sx={{ fontSize: 60, color: "#3730A3" }} onClick={navigateUpload}/>
                 <h1 className={"text-left text-7xl text-indigo-800 ml-4 font-bold"}>
                     CryptoCard
                 </h1>

@@ -1,8 +1,8 @@
 import React, { Dispatch, SetStateAction, useCallback, useState, useEffect} from "react";
 import ImageUploadIcon from "./ImageUploadIcon"
-import { updatePhoto } from "../store/slices/user";
+import { updatePhoto, selectUser } from "../store/slices/user";
 import { AppDispatch } from "../store";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Modal, Box, IconButton, Typography} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import CryptoCard from "./CryptoCard";
@@ -28,9 +28,9 @@ export default function PhotoUpload({
   const [photoInfos, setPhotoInfos] = useState<PhotoInfo>(initPhotoInfo());
   const dispatch = useDispatch<AppDispatch>();
 
+
   const setIthPhoto = useCallback((file: File) => {
     const newPhoto = { file, src: URL.createObjectURL(file) };
-    console.log(newPhoto.src);
     setPhotoInfos(newPhoto);
   }, [photoInfos, setPhotoInfos]);
 

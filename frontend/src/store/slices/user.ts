@@ -13,7 +13,7 @@ export interface userState {
     image: Float64Array | null
     idcard: Float64Array | null
     embedding: Uint8Array | null
-    sim : Float64Array | null
+    sim : number | null
     token: string | null
 }
 
@@ -172,7 +172,6 @@ export const cosine_sim = createAsyncThunk(
     async (data: {photo:Float64Array | null, id:Float64Array | null}) => {
         try{
             const { photo, id } = data;
-            console.log(photo);
             if (photo != null && id != null) {
                 const heaan = await new HEaaNEnv("IDASH");
                 await heaan.genSk();
@@ -181,13 +180,17 @@ export const cosine_sim = createAsyncThunk(
                 const photo_enc = await heaan.encrypt(photo);
                 const id_enc = await heaan.encrypt(id);
 
-    
                 const face_blob = new Blob([photo_enc], { type: 'application/octet-stream' });
                 const face = new File([face_blob], 'face.bin', { type: 'application/octet-stream' });
+                console.log(`photo embedding: ${photo}`);
+                console.log(`encrypted photo embedding: ${photo_enc}`);
     
                 const id_blob = new Blob([id_enc], { type: 'application/octet-stream' });
                 const id_card = new File([id_blob], 'id.bin', { type: 'application/octet-stream' });
-    
+                console.log(`id_card embedding: ${id}`);
+                console.log(`encrypted id_card embedding: ${id_enc}`);
+
+
                 const formData = new FormData();
                 formData.append('face', face);
                 formData.append('id_card', id_card);
@@ -200,9 +203,9 @@ export const cosine_sim = createAsyncThunk(
                 });
                 
                 const similarityData = new Uint8Array(response.data);
+                console.log(`encrypted cosine similarity: ${similarityData}`);
                 const dec = await heaan.decrypt(similarityData);
-                console.log(dec);
-                console.log(dec[0] * (1 << 10));
+
                 return dec[0] * (1 << 10);
             }
             else{
@@ -324,6 +327,12 @@ const userSlice = createSlice({
             fetchLogin.fulfilled,
             (state, action) => {
                 state.token = action.payload;
+            }
+        )
+        builder.addCase(
+            cosine_sim.fulfilled,
+            (state, action) => {
+                state.sim = action.payload;
             }
         )
     }
