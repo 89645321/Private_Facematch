@@ -65,7 +65,7 @@ export default function PhotoUpload({ setStep }: IProps) {
     <section className={""}>
       <CryptoCard setStep={setStep} />
       <h2 className={"text-center text-2xl text-black-800 font-bold my-4"}>
-        본인 인증
+        본인 인증(얼굴 촬영)
       </h2>
       <section className={"flex-1 flex flex-col justify-center items-center"}>
         {capturedImage ? (
