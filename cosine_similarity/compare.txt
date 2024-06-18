@@ -1,0 +1,79 @@
+VGG-Face
+1%ile: 0.077
+5%ile: 0.113
+50%ile: 0.250
+95%ile: 0.262
+99%ile: 0.258
+range (same, 99%ile - 1%ile): 0.610
+range (diff, 99%ile - 1%ile): 0.429
+range (overlap, diff 99%ile - same 1%ile): 0.352
+
+Facenet
+1%ile: 0.107
+5%ile: 0.080
+50%ile: 0.065
+95%ile: 0.149
+99%ile: 0.095
+range (same, 99%ile - 1%ile): 0.676
+range (diff, 99%ile - 1%ile): 0.689
+range (overlap, diff 99%ile - same 1%ile): 0.581
+
+Facenet512
+1%ile: 0.090
+5%ile: 0.107
+50%ile: 0.261
+95%ile: 0.220
+99%ile: 0.187
+range (same, 99%ile - 1%ile): 0.777
+range (diff, 99%ile - 1%ile): 0.680
+range (overlap, diff 99%ile - same 1%ile): 0.590
+
+OpenFace
+1%ile: 0.092
+5%ile: 0.088
+50%ile: 0.073
+95%ile: 0.052
+99%ile: 0.043
+range (same, 99%ile - 1%ile): 0.749
+range (diff, 99%ile - 1%ile): 0.797
+range (overlap, diff 99%ile - same 1%ile): 0.706
+
+DeepID
+1%ile: 0.068
+5%ile: 0.045
+50%ile: 0.019
+95%ile: 0.008
+99%ile: 0.005
+range (same, 99%ile - 1%ile): 0.171
+range (diff, 99%ile - 1%ile): 0.233
+range (overlap, diff 99%ile - same 1%ile): 0.165
+
+ArcFace
+1%ile: 0.114
+5%ile: 0.111
+50%ile: 0.317
+95%ile: 0.311
+99%ile: 0.280
+range (same, 99%ile - 1%ile): 0.743
+range (diff, 99%ile - 1%ile): 0.578
+range (overlap, diff 99%ile - same 1%ile): 0.464
+
+SFace
+1%ile: 0.142
+5%ile: 0.177
+50%ile: 0.285
+95%ile: 0.301
+99%ile: 0.282
+range (same, 99%ile - 1%ile): 0.742
+range (diff, 99%ile - 1%ile): 0.602
+range (overlap, diff 99%ile - same 1%ile): 0.460
+
+GhostFaceNet
+1%ile: 0.110
+5%ile: 0.122
+50%ile: 0.189
+95%ile: 0.305
+99%ile: 0.306
+range (same, 99%ile - 1%ile): 0.666
+range (diff, 99%ile - 1%ile): 0.470
+range (overlap, diff 99%ile - same 1%ile): 0.360
