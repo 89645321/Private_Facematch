@@ -4,9 +4,7 @@ import { TextField } from "@mui/material";
 import axios from "axios";
 import style from "../constant/style";
 import { AppDispatch } from '../store';
-import { selectUser } from '../store/slices/user';
-import { Modal, Box, IconButton, Typography} from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
+import { getKey, selectUser, updateResults, enc } from '../store/slices/user';
 import { useNavigate } from "react-router";
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { backendUrl } from "../store/url";
@@ -16,8 +14,9 @@ export default function SignUp() {
     const [id, setID] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [name, setName] = useState<string>("");
+    const dispatch = useDispatch<AppDispatch>();
     const passwordInput = useRef<HTMLInputElement>(null);
-    const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const image = useSelector(selectUser).image;
     const isLogin = useSelector(selectUser).token;
     const navigate = useNavigate();
 
@@ -32,45 +31,17 @@ export default function SignUp() {
     }, []);
 
     const signuphandler = useCallback(async () => {
-        if (id.length > 30 || password.length <= 10 || name.length > 100){
-            setModalOpen(true);
-        }
-        else{
-            await axios.post(`${backendUrl}/user/signup/`, {
-                identification: id,
-                password: password,
-                name: name
-            });
-            navigate("/login");
-        }
+        await axios.post(`${backendUrl}/user/signup/`, {
+            identification: id,
+            password: password,
+            name: name
+        });
+        navigate("/login");
     }, [navigate, id, password, name]);
-
-    const handleClose = useCallback(() => {
-        setModalOpen(false);
-    }, [setModalOpen]);
 
 
     return (
         <section className={""}>
-            <div>
-                <Modal
-                    open={modalOpen}
-                    onClose={handleClose}
-                    aria-labelledby="modal-title"
-                    aria-describedby="modal-description"
-                >
-                    <Box sx={style} className={"rounded-md text-center w-20 max-w-xs h-8"}>
-                    <Typography id="modal-title" variant="h6" component="h2" sx={{ fontWeight: 'bold', fontSize: '1.0rem'}}>
-                        회원가입에 실패했습니다.<br />
-                        ID, Password, 이름을<br />
-                        다시 확인해주세요.
-                    </Typography>
-                    <IconButton onClick={handleClose}>
-                        <CloseIcon />
-                    </IconButton>
-                    </Box>
-                </Modal>
-            </div>
             <div className={"flex flex-row items-center ml-12  mt-10 my-32"}>
                 <CreditCardIcon sx={{ fontSize: 60, color: "#3730A3" }} onClick={navigateLogin}/>
                 <h1 className={"text-left text-7xl text-indigo-800 ml-4 font-bold"}>
